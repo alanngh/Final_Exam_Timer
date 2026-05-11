@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>2204 Final Exam</title>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #dce8f0;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    #fsBtn {
+      position: fixed;
+      top: 16px;
+      right: 20px;
+      z-index: 9999;
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #444;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #fsBtn:hover { background: #222; }
+
+    .page {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 960px;
+      background: #f5f0e8;
+      padding: clamp(16px, 3vw, 40px);
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: clamp(16px, 2.5vw, 30px);
+      font-size: clamp(24px, 4vw, 48px);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: clamp(20px, 3vw, 40px);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+
+    th, td {
+      border: 1px solid #bbb;
+      padding: clamp(8px, 1.5vw, 16px) clamp(6px, 1vw, 14px);
+      text-align: center;
+      font-size: clamp(14px, 2vw, 22px);
+      font-weight: 700;
+    }
+
+    thead tr th {
+      background: #1a1a1a;
+      color: #ffffff;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      border-color: #333;
+    }
+
+    tr.row-17388 { background: #e0f4e0; color: #0a2a0a; }
+    tr.row-17388 td { border-color: #a8d5a8; }
+
+    tr.row-17389 { background: #d0f0f8; color: #002030; }
+    tr.row-17389 td { border-color: #8dcfe6; }
+
+    tr.row-17405 { background: #e8d8f0; color: #1a0030; }
+    tr.row-17405 td { border-color: #c2a0d8; }
+
+    .timer-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      align-items: center;
+      padding: clamp(12px, 2vw, 24px);
+      margin-bottom: clamp(12px, 2vw, 20px);
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      background: #ece7dd;
+    }
+
+    .label {
+      font-size: clamp(16px, 2.5vw, 30px);
+      font-weight: bold;
+      text-align: left;
+    }
+
+    .timer {
+      font-size: clamp(28px, 5vw, 60px);
+      color: #1a1a1a;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .timer-btn { text-align: right; }
+
+    .timer-btn button {
+      padding: clamp(8px, 1.2vw, 16px) clamp(16px, 2.5vw, 36px);
+      font-size: clamp(14px, 1.8vw, 24px);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #007bff;
+      color: white;
+      transition: background 0.2s;
+    }
+
+    .timer-btn button:hover { background: #0056b3; }
+
+    /* Fullscreen: remove max-width and center vertically */
+    :fullscreen .page {
+      min-height: 100vh;
+      align-items: center;
+      padding: 20px;
+    }
+
+    :fullscreen .container {
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <button id="fsBtn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+
+  <div class="page">
+    <div class="container">
+
+      <h1>2204 Final Exam</h1>
+
+      <table>
+        <thead>
+          <tr>
+            <th>CRN</th>
+            <th>Days</th>
+            <th>Time</th>
+            <th>Classroom</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="row-17388">
+            <td>17388</td>
+            <td>MWF</td>
+            <td>12:20 pm – 1:10 pm</td>
+            <td>PAM 1004</td>
+          </tr>
+          <tr class="row-17389">
+            <td>17389</td>
+            <td>MWF</td>
+            <td>11:15 am – 12:05 pm</td>
+            <td>PAM 1008</td>
+          </tr>
+          <tr class="row-17405">
+            <td>17405</td>
+            <td>MWF</td>
+            <td>9:05 am – 9:55 am</td>
+            <td>PAM 3004</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Multiple Choice Timer -->
+      <div class="timer-section">
+        <div class="label">Multiple Choice</div>
+        <div class="timer" id="mcTimer">01:00:00</div>
+        <div class="timer-btn"><button onclick="startTimer('mc')">Start</button></div>
+      </div>
+
+      <!-- Free Response Timer -->
+      <div class="timer-section">
+        <div class="label">Free Response</div>
+        <div class="timer" id="frTimer">01:00:00</div>
+        <div class="timer-btn"><button onclick="startTimer('fr')">Start</button></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    let mcRunning = false;
+    let frRunning = false;
+
+    function startTimer(type) {
+      let duration = 60 * 60;
+      let display;
+
+      if (type === 'mc') {
+        if (mcRunning) return;
+        mcRunning = true;
+        display = document.getElementById('mcTimer');
+      } else {
+        if (frRunning) return;
+        frRunning = true;
+        display = document.getElementById('frTimer');
+      }
+
+      let timer = duration;
+
+      const interval = setInterval(() => {
+        let h = Math.floor(timer / 3600);
+        let m = Math.floor((timer % 3600) / 60);
+        let s = timer % 60;
+
+        display.textContent =
+          String(h).padStart(2,'0') + ':' +
+          String(m).padStart(2,'0') + ':' +
+          String(s).padStart(2,'0');
+
+        timer--;
+
+        if (timer < 0) {
+          clearInterval(interval);
+          if (type === 'mc') mcRunning = false;
+          else frRunning = false;
+          display.textContent = "00:00:00";
+          alert(type === 'mc' ? 'Multiple Choice Time is Up!' : 'Free Response Time is Up!');
+        }
+      }, 1000);
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          alert('Fullscreen not available: ' + err.message);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    document.addEventListener('fullscreenchange', () => {
+      const btn = document.getElementById('fsBtn');
+      btn.textContent = document.fullscreenElement ? '✕ Exit Fullscreen' : '⛶ Fullscreen';
+    });
+  </script>
+
+</body>
+</html>
