@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>3214 Final Exam xvzxvzx </title>
+  <title>3214 Final Exam</title>
 
   <style>
-    *, *::before, *::after { box-sizing: border-box; }
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
 
     body {
       font-family: Arial, Helvetica, sans-serif;
@@ -30,7 +32,10 @@
       cursor: pointer;
       transition: background 0.2s;
     }
-    #fsBtn:hover { background: #222; }
+
+    #fsBtn:hover {
+      background: #222;
+    }
 
     .page {
       width: 100%;
@@ -66,7 +71,8 @@
 
     th, td {
       border: 1px solid #bbb;
-      padding: clamp(8px, 1.5vw, 16px) clamp(6px, 1vw, 14px);
+      padding: clamp(8px, 1.5vw, 16px)
+               clamp(6px, 1vw, 14px);
       text-align: center;
       font-size: clamp(14px, 2vw, 22px);
       font-weight: 700;
@@ -74,20 +80,20 @@
 
     thead tr th {
       background: #1a1a1a;
-      color: #ffffff;
+      color: white;
       font-weight: 700;
       letter-spacing: 0.03em;
       border-color: #333;
     }
 
-    tr.row-17388 { background: #e0f4e0; color: #0a2a0a; }
-    tr.row-17388 td { border-color: #a8d5a8; }
+    tr.row-17470 {
+      background: #d0f0f8;
+      color: #002030;
+    }
 
-    tr.row-17389 { background: #d0f0f8; color: #002030; }
-    tr.row-17389 td { border-color: #8dcfe6; }
-
-    tr.row-17405 { background: #e8d8f0; color: #1a0030; }
-    tr.row-17405 td { border-color: #c2a0d8; }
+    tr.row-17470 td {
+      border-color: #8dcfe6;
+    }
 
     .timer-section {
       display: grid;
@@ -113,22 +119,27 @@
       text-align: center;
     }
 
-    .timer-btn { text-align: right; }
+    .timer-btn {
+      text-align: right;
+    }
 
     .timer-btn button {
-      padding: clamp(8px, 1.2vw, 16px) clamp(16px, 2.5vw, 36px);
+      padding: clamp(8px, 1.2vw, 16px)
+               clamp(16px, 2.5vw, 36px);
       font-size: clamp(14px, 1.8vw, 24px);
       border: none;
       border-radius: 8px;
       cursor: pointer;
       background: #007bff;
       color: white;
+      margin-left: 10px;
       transition: background 0.2s;
     }
 
-    .timer-btn button:hover { background: #0056b3; }
+    .timer-btn button:hover {
+      background: #0056b3;
+    }
 
-    /* Fullscreen: remove max-width and center vertically */
     :fullscreen .page {
       min-height: 100vh;
       align-items: center;
@@ -138,16 +149,37 @@
     :fullscreen .container {
       max-width: 100%;
     }
+
+    @media (max-width: 700px) {
+      .timer-section {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        text-align: center;
+      }
+
+      .label,
+      .timer,
+      .timer-btn {
+        text-align: center;
+      }
+
+      .timer-btn button {
+        margin: 5px;
+      }
+    }
   </style>
 </head>
+
 <body>
 
-  <button id="fsBtn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+  <button id="fsBtn" onclick="toggleFullscreen()">
+    ⛶ Fullscreen
+  </button>
 
   <div class="page">
     <div class="container">
 
-      <h1>2204 Final Exam</h1>
+      <h1>3214 Final Exam</h1>
 
       <table>
         <thead>
@@ -158,8 +190,9 @@
             <th>Classroom</th>
           </tr>
         </thead>
+
         <tbody>
-          <tr class="row-17388">
+          <tr class="row-17470">
             <td>17470</td>
             <td>TR</td>
             <td>9:30 am – 10:45 am</td>
@@ -168,79 +201,141 @@
         </tbody>
       </table>
 
-      <!-- Multiple Choice Timer -->
+      <!-- Exam Timer -->
       <div class="timer-section">
-        <div class="label">Multiple Choice</div>
-        <div class="timer" id="mcTimer">01:00:00</div>
-        <div class="timer-btn"><button onclick="startTimer('mc')">Start</button></div>
-      </div>
 
-      <!-- Free Response Timer -->
-      <div class="timer-section">
-        <div class="label">Free Response</div>
-        <div class="timer" id="frTimer">01:00:00</div>
-        <div class="timer-btn"><button onclick="startTimer('fr')">Start</button></div>
+        <div class="label">
+          Exam Timer
+        </div>
+
+        <div class="timer" id="examTimer">
+          02:00:00
+        </div>
+
+        <div class="timer-btn">
+          <button onclick="startTimer()">
+            Start
+          </button>
+
+          <button onclick="resetTimer()">
+            Reset
+          </button>
+        </div>
+
       </div>
 
     </div>
   </div>
 
   <script>
-    let mcRunning = false;
-    let frRunning = false;
 
-    function startTimer(type) {
-      let duration = 60 * 60;
-      let display;
+    let duration = 2 * 60 * 60;
+    let remaining = duration;
 
-      if (type === 'mc') {
-        if (mcRunning) return;
-        mcRunning = true;
-        display = document.getElementById('mcTimer');
-      } else {
-        if (frRunning) return;
-        frRunning = true;
-        display = document.getElementById('frTimer');
-      }
+    let running = false;
+    let interval = null;
 
-      let timer = duration;
+    const display =
+      document.getElementById('examTimer');
 
-      const interval = setInterval(() => {
-        let h = Math.floor(timer / 3600);
-        let m = Math.floor((timer % 3600) / 60);
-        let s = timer % 60;
+    function formatTime(seconds) {
 
-        display.textContent =
-          String(h).padStart(2,'0') + ':' +
-          String(m).padStart(2,'0') + ':' +
-          String(s).padStart(2,'0');
+      const h = Math.floor(seconds / 3600);
 
-        timer--;
+      const m = Math.floor(
+        (seconds % 3600) / 60
+      );
 
-        if (timer < 0) {
+      const s = seconds % 60;
+
+      return (
+        String(h).padStart(2, '0') + ':' +
+        String(m).padStart(2, '0') + ':' +
+        String(s).padStart(2, '0')
+      );
+    }
+
+    function updateDisplay() {
+
+      display.textContent =
+        formatTime(remaining);
+    }
+
+    function startTimer() {
+
+      if (running) return;
+
+      running = true;
+
+      interval = setInterval(() => {
+
+        remaining--;
+
+        updateDisplay();
+
+        if (remaining <= 0) {
+
           clearInterval(interval);
-          if (type === 'mc') mcRunning = false;
-          else frRunning = false;
-          display.textContent = "00:00:00";
-          alert(type === 'mc' ? 'Multiple Choice Time is Up!' : 'Free Response Time is Up!');
+
+          running = false;
+
+          remaining = 0;
+
+          updateDisplay();
+
+          alert('Exam Time is Up!');
         }
+
       }, 1000);
     }
 
+    function resetTimer() {
+
+      clearInterval(interval);
+
+      running = false;
+
+      remaining = duration;
+
+      updateDisplay();
+    }
+
     function toggleFullscreen() {
+
       if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(err => {
-          alert('Fullscreen not available: ' + err.message);
-        });
+
+        document.documentElement
+          .requestFullscreen()
+          .catch(err => {
+
+            alert(
+              'Fullscreen not available: ' +
+              err.message
+            );
+          });
+
       } else {
+
         document.exitFullscreen();
       }
     }
 
-    document.addEventListener('fullscreenchange', () => {
-      const btn = document.getElementById('fsBtn');
-      btn.textContent = document.fullscreenElement ? '✕ Exit Fullscreen' : '⛶ Fullscreen';
-    });
+    document.addEventListener(
+      'fullscreenchange',
+      () => {
+
+        const btn =
+          document.getElementById('fsBtn');
+
+        btn.textContent =
+          document.fullscreenElement
+            ? '✕ Exit Fullscreen'
+            : '⛶ Fullscreen';
+      }
+    );
+
+    updateDisplay();
+
   </script>
 
 </body>
