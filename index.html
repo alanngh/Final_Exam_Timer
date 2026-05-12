@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>3214 Final Exam </title>
+  <title>3214 Final Exam</title>
 
   <style>
     *, *::before, *::after {
@@ -81,8 +81,6 @@
     thead tr th {
       background: #1a1a1a;
       color: white;
-      font-weight: 700;
-      letter-spacing: 0.03em;
       border-color: #333;
     }
 
@@ -100,7 +98,6 @@
       grid-template-columns: 1fr 1fr 1fr;
       align-items: center;
       padding: clamp(12px, 2vw, 24px);
-      margin-bottom: clamp(12px, 2vw, 20px);
       border: 2px solid #ddd;
       border-radius: 10px;
       background: #ece7dd;
@@ -132,7 +129,6 @@
       cursor: pointer;
       background: #007bff;
       color: white;
-      margin-left: 10px;
       transition: background 0.2s;
     }
 
@@ -154,17 +150,12 @@
       .timer-section {
         grid-template-columns: 1fr;
         gap: 16px;
-        text-align: center;
       }
 
       .label,
       .timer,
       .timer-btn {
         text-align: center;
-      }
-
-      .timer-btn button {
-        margin: 5px;
       }
     }
   </style>
@@ -201,7 +192,6 @@
         </tbody>
       </table>
 
-      <!-- Exam Timer -->
       <div class="timer-section">
 
         <div class="label">
@@ -216,10 +206,6 @@
           <button onclick="startTimer()">
             Start
           </button>
-
-          <button onclick="resetTimer()">
-            Reset
-          </button>
         </div>
 
       </div>
@@ -233,7 +219,6 @@
     let remaining = duration;
 
     let running = false;
-    let interval = null;
 
     const display =
       document.getElementById('examTimer');
@@ -267,7 +252,9 @@
 
       running = true;
 
-      interval = setInterval(() => {
+      updateDisplay();
+
+      const interval = setInterval(() => {
 
         remaining--;
 
@@ -287,17 +274,6 @@
         }
 
       }, 1000);
-    }
-
-    function resetTimer() {
-
-      clearInterval(interval);
-
-      running = false;
-
-      remaining = duration;
-
-      updateDisplay();
     }
 
     function toggleFullscreen() {
